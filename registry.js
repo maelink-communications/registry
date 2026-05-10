@@ -16,7 +16,7 @@ function registerServer(serverId, address, port, version = "1.0") {
   servers.set(serverId, {
     id: serverId,
     address,
-    port,
+    port: port ? port : undefined,
     lastHeartbeat: now,
     version,
     registeredAt: now,
@@ -53,7 +53,7 @@ function getPeers() {
       activePeers.push({
         id: server.id,
         address: server.address,
-        port: server.port,
+        port: server.port ? server.port : undefined,
         version: server.version,
       });
     }
@@ -136,9 +136,9 @@ async function handleRequest(req) {
     if (pathname === "/register" && method === "POST") {
       const { id, address, port, version } = await req.json();
 
-      if (!id || !address || !port) {
+      if (!id || !address) {
         return json(
-          { error: "Missing required fields: id, address, port" },
+          { error: "Missing required fields: id, address" },
           400
         );
       }
